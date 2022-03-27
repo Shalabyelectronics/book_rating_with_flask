@@ -72,6 +72,76 @@ db.session.query(Books).all()
 ```
 Or you can search for specific book by any of its attributes by this line of code:
 ```python
+book_id = 1
 db.session.query(Books).filter_by(id=book_id).first()
 # Just change the parameter inside the filter_by method to any attributes withen Books Model.
+```
+Lets say you want to update or edite any cell in your database here we need to locate the book first then update what we want, and to do so we can fellow the code bellow:
+```python
+book_to_edit = db.session.query(Books).filter_by(id=book_id).first()
+book_to_edit.title = "Invent Your Own Computer Games with Python"
+# So here we update the title from > Automate the Boring Stuff with python TO  Invent Your Own Computer Games with Python
+db.session.commit()
+# No need to use add method here because you already create the row and you just update it as well
+```
+Finally if we want to delete any row in our database we can do so by this line of code:
+```python
+book = db.session.query(Books).filter_by(id=book_id).first()
+db.session.delete(book)
+db.session.commit()
+```
+Before going to the Step 4 I want to add a useful tool and it is Sqlite3 Shell you can read and download it [HERE](https://www.sqlite.org/download.html).
+## Step 4
+First we need to display all books that we stored in our database to our home page and to do so we need to load all rows when our home page and we can do so by this line of code inside our home route function:
+```python
+@app.route('/')
+def home():
+    all_books = [book for book in db.session.query(Books).all()]
+    # Here we load all rows and save it in our all_books array to pass it to our home page and unpack it.
+    return render_template('index.html', all_books=all_books)
+```
+Then we Update our home page > index.html to loop throw all_books array and unpack the each book data as the Jinja code below:
+```html
+{% for book_data in all_books %}
+    <ul>
+        <li>Book Name : {{ book_data.title }}</li>
+        <li>Book Author : {{ book_data.author }}</li>
+        <li>Book Rating : {{ book_data.rating }}/10</li>
+        <li>
+            <a href="{{ url_for('edite_rating', book_id=book_data.id) }}"><button>Edite Rating</button></a>
+            <a href="{{ url_for('delete_book', book_id=book_data.id) }}"><button>Delete</button></a>
+        </li>
+    </ul>
+    <hr>
+    {% else %}
+    <p>Library is empty.</p>
+    <hr>
+    {% endfor %}
+```
+On this step we are done from display our Books table data next step will be about adding new book data to our database.
+## Step 5
+Ok We are doing well so far, now we need to add new book data to our database and to do so we need to create our form first and it will be like this:
+```html
+<form action="{{url_for('add')}}" method="post"><!--We will redirect data to our add route function with post -->
+        <label>Book Name</label>
+        <input type="text" name="Book Name">
+        <label>Book Author</label>
+        <input type="text" name="Book Author">
+        <label>Rating</label>
+        <input type="text" name="Rating">
+        <button type="submit">Add Book</button>
+</form>
+```
+then we will create our add route function like this:
+```python
+@app.route("/add", methods=["POST", "GET"])
+def add():
+    if request.method == "POST":
+        book_data = Books(title=request.form.get('Book Name').title(),
+                          author=request.form.get('Book Author').title(),
+                          rating=request.form.get('Rating'))
+        db.session.add(book_data)
+        db.session.commit()
+
+        return redirect(url_for('home'))
 ```
