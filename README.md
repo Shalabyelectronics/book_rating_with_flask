@@ -189,3 +189,18 @@ again we will add another link to our home page to delete the book like this :
 ```html
 <a href="{{ url_for('delete_book', book_id=book_data.id) }}"><button>Delete</button></a>
 ```
+Because deleting the book book id to use it to find and delete the book data from our database so we are going to do that by delete_book route function that will do this job as below:
+```python
+@app.route("/delete/<book_id>")
+def delete_book(book_id):
+    book = db.session.query(Books).filter_by(id=book_id).first()
+    db.session.delete(book)
+    db.session.commit()
+    return redirect(url_for('home'))
+```
+In The end I'm going to add very useful resources that helped me to finish this practice:
+1. [Connecting to a Database in Flask Using Flask-SQLAlchemy](https://youtu.be/SYG1jQYIxfQ)
+2. [Python Flask Tutorial: Full-Featured Web App Part 1 - Getting Started](https://youtu.be/MwZwr5Tvyxo)
+3. [Flask-SQLAlchemy Documentation](https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/)
+4. [100 Days of Code: The Complete Python Pro Bootcamp for 2022
+](https://www.udemy.com/share/103J8C3@O5QB-ffxB8X8axfS2XBhbymaUyFgGOa-PNRyRC6a3J__R-3l1XUY-kAu43EX26mr/)
