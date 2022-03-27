@@ -61,3 +61,17 @@ from main import Books
 first_book = Books(title="Automate the Boring Stuff with python", author="Al Sweigart", rating=10.0)
 ```
 So now you create first row on Books table and we did not add the id because it will be generated automatically. 
+But this changes can't be added until you added and commit it as well by this line of code:
+```python
+db.session.add(first_book)
+db.session.commit()
+```
+Now you added it successfully and to confirm that this row was added you can use query to display all row on the Books table by this line of code:
+```python
+db.session.query(Books).all()
+```
+Or you can search for specific book by any of its attributes by this line of code:
+```python
+db.session.query(Books).filter_by(id=book_id).first()
+# Just change the parameter inside the filter_by method to any attributes withen Books Model.
+```
