@@ -136,12 +136,56 @@ then we will create our add route function like this:
 ```python
 @app.route("/add", methods=["POST", "GET"])
 def add():
-    if request.method == "POST":
+    if request.method == "POST": # When the user submit the form data by POST Request to send data to server.
+    # here we wil create a book_data instance from Books Model then added and commit it as well
         book_data = Books(title=request.form.get('Book Name').title(),
                           author=request.form.get('Book Author').title(),
                           rating=request.form.get('Rating'))
         db.session.add(book_data)
         db.session.commit()
-
+    # Finally we will redirect to our home page route
         return redirect(url_for('home'))
+    
+    # We will load the home page if the user did not submit the form.
+    return render_template('add.html')
+```
+Until this step we did the job for adding new book to our database next step we will explain how to edite our book rating and deleting book as well
+## Step 6
+To edite our book rating lets start adding edite rating to our home page by adding edite rating link tage as button 
+```html
+<a href="{{ url_for('edite_rating', book_id=book_data.id) }}"><button>Edite Rating</button></a>
+```
+As you see the edite_rating route will take one parameter book_id th use it later to get that book from our database and edite thier rating. To do so we need to create our edite rating route function like below.
+```python
+@app.route("/edite_rating/<book_id>", methods=["GET", "POST"])
+def edite_rating(book_id):
+    if request.method == "GET": # When we Get the page from the server we will load the specified book data.
+        book_selected = db.session.query(Books).filter_by(id=book_id).first()
+        # And we will pass this book data when rendering our page.
+        return render_template("edite_rating.html", book=book_selected)
+    else:
+    # If the user post the form data to the server here we edited the rating and commit it as well.
+        change_rate = db.session.query(Books).filter_by(id=book_id).first()
+        change_rate.rating = request.form.get("new rate")
+        db.session.commit()
+        # Finally we redirect the user to the home page
+        return redirect(url_for('home'))
+```
+So Our edite_rating web page will look like this:
+```html
+<ul>
+    <li><h1>Book : {{ book.title }} | Author : {{ book.author }} | Rating : {{ book.rating }}</h1></li>
+    <li>
+<form action="{{url_for('edite_rating', book_id=book.id)}}" method="post">
+    <h2>Change Rating to : </h2>
+    <input type="number" step="0.01" name="new rate">
+    <button type="submit">Edite it</button>
+</form>
+    </li>
+</ul>
+```
+So Now we finised from editing the book rating and the next will be how to delete the book from our database.
+again we will add another link to our home page to delete the book like this :
+```html
+<a href="{{ url_for('delete_book', book_id=book_data.id) }}"><button>Delete</button></a>
 ```
