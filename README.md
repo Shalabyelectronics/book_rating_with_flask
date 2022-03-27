@@ -1,0 +1,41 @@
+# Book Rating With_flask
+This practice will teach us how to use object oriented mapping to connect your sqlite3 database with our flask web application by using Flask Alchemy to practicing CRUD , Create, Read, Update, Delete , Data from our database.
+## Step 1
+As every starting steps we need to install flask alchemy by using pip 
+```python
+pip install -U Flask-SQLAlchemy
+```
+And we need to import the particular class from flask_sqlalchemy and it is SQLAlcemy.
+then we need to add a configration to our flask app to locate our sqlite3 database by adding this line of code.
+```python
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///new-books-collection.db"
+```
+And We use 3 slashes that mean it is a relative path and four slashes that mean absolute path.
+We can also add another configration that will hide sqlAlchemy warning by this line of code. It's really not effecting your web application on any way.
+```python
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+```
+Finally for this step we need to create an instance from SQLAlchemy class by adding our flask app as argument.
+```python
+db = SQLAlchemy(app)
+```
+## step 2
+In this stage we are going to create our database table and we can do that by using `Model` class which can be used to declare models:
+for this project we are going to create a Books table that includes four columns as below:
+1. id and it will be an Integer promary key.
+2. title and it will be a unique string .
+3. author and it will be a string.
+4. rating and it will be a float number.
+
+```python
+class Books(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(250), unique=True, nullable=False)
+    author = db.Column(db.String(250), nullable=False)
+    rating = db.Column(db.Float, nullable=False)
+    
+    def __repr__(self):
+    # To view the object data when print it.
+        return f"Books(title : {self.title}, Author : {self.author}, Rating : {self.rating}/10 )"
+           
+```
