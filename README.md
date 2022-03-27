@@ -1,4 +1,4 @@
-# Book Rating With_flask
+# Book Rating With flask and flask Alchemy
 This practice will teach us how to use object oriented mapping to connect your sqlite3 database with our flask web application by using Flask Alchemy to practicing CRUD , Create, Read, Update, Delete , Data from our database.
 ![day-63-project](https://user-images.githubusercontent.com/57592040/160295073-a1bd343d-4e4c-4d36-ac3c-5f4049a0a141.gif)
 
