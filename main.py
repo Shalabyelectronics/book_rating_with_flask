@@ -7,6 +7,7 @@ app = Flask(__name__)
 app.secret_key = "6f8c6cd39dabc7a5b32be6fdd8c8377d"
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///new-books-collection.db"
 """We use 3 slashes that mean it is a relative path and four slashes that mean absolute path"""
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 '''
